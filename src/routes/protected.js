@@ -1,24 +1,17 @@
 import { Router } from 'express';
-import supabase from '../supabase.js';
+import requireAuth from '../middleware/requireAuth.js';
 
 const router = Router();
 
-router.get('/profile', async (req, res) => {
-  const header = req.headers.authorization || '';
-  const [scheme, token] = header.split(' ');
-  if (scheme !== 'Bearer' || !token) {
-    return res.status(401).json({ error: 'Access token required' });
-  }
+router.get('/profile', requireAuth, (req, res) => {
+  const { id, email, created_at } = req.user;
+  res.status(200).json({ id, email, created_at });
+});
 
-  const { data: { user }, error } = await supabase.auth.getUser(token);
-  if (error || !user) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-
+router.get('/dashboard', requireAuth, (req, res) => {
   res.status(200).json({
-    id: user.id,
-    email: user.email,
-    created_at: user.created_at,
+    message: `Welcome back, ${req.user.email}`,
+    user: { id: req.user.id, email: req.user.email },
   });
 });
 
