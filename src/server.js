@@ -1,5 +1,7 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import { PORT, SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { openapiSpec } from './openapi.js';
 import authRoutes from './routes/auth.js';
 import publicRoutes from './routes/public.js';
 import protectedRoutes from './routes/protected.js';
@@ -12,6 +14,8 @@ app.get('/', (req, res) => res.json({ message: 'Auth Practice API' }));
 app.use('/auth', authRoutes);
 app.use('/public', publicRoutes);
 app.use('/protected', protectedRoutes);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 const server = app.listen(PORT);
 
