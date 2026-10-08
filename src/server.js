@@ -1,6 +1,8 @@
 import express from 'express';
 import { PORT, SUPABASE_URL, SUPABASE_KEY } from './config.js';
 import authRoutes from './routes/auth.js';
+import publicRoutes from './routes/public.js';
+import protectedRoutes from './routes/protected.js';
 
 const app = express();
 app.use(express.json());
@@ -8,6 +10,8 @@ app.use(express.json());
 app.get('/', (req, res) => res.json({ message: 'Auth Practice API' }));
 
 app.use('/auth', authRoutes);
+app.use('/public', publicRoutes);
+app.use('/protected', protectedRoutes);
 
 const server = app.listen(PORT);
 
